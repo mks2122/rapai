@@ -6,6 +6,6 @@ def speech_to_text(audio_path):
     return result["text"]
 
 if __name__ == "__main__":
-    audio_file = "sample.wav"  # Replace with your audio file path
+    audio_file = "./output.mp3"  # Replace with your audio file path
     text = speech_to_text(audio_file)
     print("Transcribed Text:", text)
