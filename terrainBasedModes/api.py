@@ -1,7 +1,11 @@
-from transformers import pipeline
 
-messages = [
-    {"role": "system", "content": """ " Battery Health": "85% (Good condition)",
+from groq import Groq
+
+client = Groq()
+completion = client.chat.completions.create(
+    model="gemma2-9b-it",
+    messages=[
+        {"role": "system", "content": """ " Battery Health": "85% (Good condition)",
         "Battery Temperature": "32°C",
         "State of Charge (SOC)": "68%",
         "Charging Status": "Charging (Fast mode)",
@@ -21,6 +25,13 @@ messages = [
         "Headlight Status": "On (Auto Mode)",
         "GPS Signal Strength": "Strong",
         "Connectivity Status": "4G LTE Connected" this is the diagnostics of the car. answer the following questions based on this information, if asked:"""},
-]
-pipe = pipeline("text-generation", model="Qwen/Qwen2-3B", device=0) 
-print(pipe(messages))
+    ],
+    temperature=1,
+    max_completion_tokens=460,
+    top_p=1,
+    stream=True,
+    stop=None,
+)
+
+for chunk in completion:
+    print(chunk.choices[0].delta.content or "", end="")
