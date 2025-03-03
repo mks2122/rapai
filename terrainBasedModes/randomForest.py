@@ -29,7 +29,7 @@ model.fit(X_train, y_train)
 
 # Evaluate Model
 y_pred = model.predict(X_test)
-# Export the model
-joblib.dump(model, 'random_forest_model.pkl')
+
+joblib.dump(model, 'random_forest_model.joblib')
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print(classification_report(y_test, y_pred))
