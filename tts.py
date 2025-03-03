@@ -13,11 +13,37 @@
 
 from gtts import gTTS
 import os
+import pyaudio
+import wave
+from pydub import AudioSegment
 
-text = "Hello, this is a text-to-speech test!"
-tts = gTTS(text=text, lang="en")
-tts.save("output.mp3")
 
-# Play the generated speech
-os.system("start output.mp3")  # Windows
-# os.system("mpg321 output.mp3")  # Linux
+def play_audio(file_path):
+        chunk = 1024
+        wf = wave.open(file_path, 'rb')
+        p = pyaudio.PyAudio()
+
+        stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
+                        channels=wf.getnchannels(),
+                        rate=wf.getframerate(),
+                        output=True)
+
+        data = wf.readframes(chunk)
+
+        while data:
+            stream.write(data)
+            data = wf.readframes(chunk)
+
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
+def speak(text):
+    tts = gTTS(text=text, lang="en")
+    tts.save("output.mp3")
+
+    # Convert MP3 to WAV
+    sound = AudioSegment.from_mp3("output.mp3")
+    sound.export("output.wav", format="wav")
+
+    play_audio("output.wav")
+

@@ -1,5 +1,9 @@
 from flask import Flask, jsonify
 import random
+from whishperAudio import speech_to_text
+from tts import speak
+from speechRecognition import record_speech
+from terrainBasedModes.api import llm
 
 app = Flask(_name_)
 
@@ -48,16 +52,20 @@ def generate_ev_diagnostics():
 def get_random_sms():
     random_sms = random.choice(sms_messages)
     random_name = random.choice(names)
-    return f"{random_name} sent a message saying {random_sms}\n <br>{random_name}"
+    speak(f"{random_name} sent a message saying {random_sms}\n <br>{random_name}")
+    return record_speech()
+    
 
 @app.route('/random_call', methods=['GET'])
 def get_random_call():
     random_name = random.choice(names)
-    return f"{random_name} is trying to call you..."
+    speak(f"{random_name} is trying to call you...")
+    return record_speech()
 
 @app.route('/ev_diagnostics', methods=['GET'])
 def get_ev_diagnostics():
-    return jsonify(generate_ev_diagnostics())
+    query = record_speech()
+    speak(llm(query))
 
 
 if _name_ == '_main_':
