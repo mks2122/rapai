@@ -1,11 +1,12 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify,request, render_template
 import random
 from whishperAudio import speech_to_text
 from tts import speak
 from speechRecognition import record_speech
 from terrainBasedModes.api import llm
+from autoMode import autoMode
 
-app = Flask(_name_)
+app = Flask(__name__,template_folder='./')
 
 # Predefined list of random SMS messages and names
 sms_messages = [
@@ -24,35 +25,15 @@ names = [
     "Emma"
 ]
 
-def generate_ev_diagnostics():
-    return {
-        "Battery Health": "85% (Good condition)",
-        "Battery Temperature": "32°C",
-        "State of Charge (SOC)": "68%",
-        "Charging Status": "Charging (Fast mode)",
-        "Charging Power": "50 kW",
-        "Estimated Range": "320 km",
-        "Motor Temperature": "45°C",
-        "Inverter Status": "Operational",
-        "Regenerative Braking Efficiency": "78%",
-        "Tire Pressure": "35 PSI (Optimal)",
-        "Brake Pad Wear": "20% worn",
-        "Cabin Temperature": "22°C",
-        "Coolant Temperature": "38°C",
-        "Energy Consumption Rate": "14 kWh/100km",
-        "Odometer Reading": "15,000 km",
-        "Drive Mode": "Eco Mode",
-        "Auxiliary Battery Voltage": "12.8V",
-        "Headlight Status": "On (Auto Mode)",
-        "GPS Signal Strength": "Strong",
-        "Connectivity Status": "4G LTE Connected"
-    }
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 @app.route('/random_sms', methods=['GET'])
 def get_random_sms():
     random_sms = random.choice(sms_messages)
     random_name = random.choice(names)
-    speak(f"{random_name} sent a message saying {random_sms}\n <br>{random_name}")
+    speak(f"{random_name} sent a message saying {random_sms}\n {random_name}")
     return record_speech()
     
 
@@ -64,9 +45,23 @@ def get_random_call():
 
 @app.route('/ev_diagnostics', methods=['GET'])
 def get_ev_diagnostics():
+    speak("What would you like to know about the car?")
     query = record_speech()
     speak(llm(query))
+    return 'done'
 
 
-if _name_ == '_main_':
+@app.route('/mode')
+def mode():
+    # Get the 'lat' and 'lom' query parameters
+    lat = 21.1702 
+    lom = 72.8311 
+    
+    return autoMode(lat, lom)
+    return f"Latitude: {lat}, Longitude: {lom}"
+    # speak(llm(query))
+    # return jsonify({"response": llm(query)})
+
+
+if __name__ == '__main__':
     app.run(debug=True)

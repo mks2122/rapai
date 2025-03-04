@@ -25,7 +25,8 @@ def llm(msg):
             "Auxiliary Battery Voltage": "12.8V",
             "Headlight Status": "On (Auto Mode)",
             "GPS Signal Strength": "Strong",
-            "Connectivity Status": "4G LTE Connected" this is the diagnostics of the car. answer the following questions based on this information, if asked:"""},
+            "Connectivity Status": "4G LTE Connected" 
+            this is the diagnostics of the car. answer the following questions based on this information, if asked about any of these:"""},
         
             {"role": "user", "content": msg}
         ],
