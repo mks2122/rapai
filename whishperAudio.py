@@ -1,7 +1,7 @@
 import whisper
 
 def speech_to_text(audio_path):
-    model = whisper.load_model("small")  # Load the Whisper Small model
+    model = whisper.load_model("small") 
     result = model.transcribe(audio_path)
     return result["text"]
 

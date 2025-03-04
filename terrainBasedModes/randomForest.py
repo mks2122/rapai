@@ -9,16 +9,13 @@ import joblib
 
 data = fetchData()
 print(data.head())
-# Drop the maxspeed column
 data = data.drop(columns=["maxspeed",])
 
 
-# Encode categorical features
 le = LabelEncoder()
 data["road_type"] = le.fit_transform(data["road_type"].astype(str))
-data["junction"] = data["junction"].map({"no": 0, "yes": 1})  # Convert labels to numbers
+data["junction"] = data["junction"].map({"no": 0, "yes": 1})  
 
-# Split into Train/Test
 X = data.drop("label", axis=1)
 y = data["label"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
